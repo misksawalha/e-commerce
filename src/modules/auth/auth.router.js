@@ -1,8 +1,8 @@
 import { Router } from "express";
+import { signUp } from './controller/auth.controller.js';
 const router  = Router();
 
-router.get('/',(req,res)=>{
-    res.status(200).json({message:"auth module"})
-})
+router.post('/signUp',signUp)
+
 
 export default router
