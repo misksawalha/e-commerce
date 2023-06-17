@@ -14,8 +14,8 @@ export const signUp = async (req, res) => {
              let hashPassword = await bcrypt.hash(password,parseInt(process.env.SALTROUND))
              let newUser = await new userModel({userName,email,password:hashPassword})
              let token =await jwt.sign({id:newUser._id},process.env.EMAILTOKEN,{expiresIn:'1h'});
-            //  console.log(token)
-             let link = `${req.protocol}://${req.headers.host}${process.env.BASEURL}auth/confirmEmail/${token}`
+             console.log(token)
+             let link = `${req.protocol}://${req.headers.host}${process.env.BASEURL}auth/confirmEmail${token}`
              let message=`
               <a href="${link}">Confirm Email</a>
              `
@@ -32,4 +32,21 @@ export const signUp = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: "catch error: " + error })
     }
+}
+
+export const confirmEmail=async (req,res)=>{
+       try {
+         let {token} = req.params
+        let decoded =await jwt.verify(token,process.env.EMAILTOKEN)
+        if(!decoded.id){
+            res.status(400).json({message:"Invalid payload"})
+        }
+        else{
+          let user = await userModel.findOneAndUpdate({_id:decoded.id,confirmEmail:false},{confirmEmail:true})
+          res.status(200).json({message:"confirmed email"})
+        }
+        console.log(decoded)
+       } catch (error) {
+        res.status(500).json({message:"catch error "+error})
+       }
 }
