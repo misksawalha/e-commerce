@@ -20,10 +20,16 @@ export const signUp = async (req, res) => {
               <a href="${link}">Confirm Email</a>
              `
              let info =await sendEmail(email,'Verify Email',message)
-             res.json({message:info})
+             if(info.accepted.length){
+                   let saveUser = await newUser.save()
+                   res.status(201).json({message:"user added",savedUser:saveUser._id})
+             }
+             else{
+                res.status(400).json({message:"email rejected"})
+             }
         }
 
     } catch (error) {
-        res.status(404).json({ message: "catch error: " + error })
+        res.status(500).json({ message: "catch error: " + error })
     }
 }
