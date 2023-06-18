@@ -71,12 +71,12 @@ export const signIn = async (req, res) => {
                         res.status(400).json({ message: "wrong password" })
                     }
                     else {
-                        res.status(400).json({ message: "Done" })
+                        let token = await jwt.sign({id:user._id},process.env.TOKEN,{expiresIn:60*60*24})
+                        res.status(200).json({ message: "Done",token })
                     }
                 }
             }
         }
-        // res.status(300).json({ message: "signIn" })
     } catch (error) {
         res.status(500).json({ message: "catch error " + error })
     }
