@@ -52,12 +52,13 @@ export const confirmEmail = async (req, res) => {
     }
 }
 
-export const signIn = async (req, res) => {
-    try {
+export const signIn =async (req, res,next) => {
+  
         let { email, password } = req.body
         let user = await userModel.findOne({ email })
         if (!user) {
-            res.status(400).json({ message: "Email does not exist, please signup" })
+            // res.status(400).json({ message: "Email does not exist, please signup" })
+            return next(new Error ("Email does not exist, please signup",{cause:400}))
         } else {
             if (!user.confirmEmail) {
                 res.status(400).json({ message: "please confirm" })
@@ -77,7 +78,5 @@ export const signIn = async (req, res) => {
                 }
             }
         }
-    } catch (error) {
-        res.status(500).json({ message: "catch error " + error })
-    }
+  
 }
