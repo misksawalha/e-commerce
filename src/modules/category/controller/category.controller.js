@@ -28,14 +28,20 @@ export const updateCategory = asyncHandler(
 
    async (req, res, next) => {
       if (req.file) {
-         const { secure_url } = await cloudinary.uploader.upload(req.file.path, { folder: 'ecommerce/category' })
+         const { secure_url,public_id } = await cloudinary.uploader.upload(req.file.path, { folder: 'ecommerce/category' })
          req.body.image = secure_url
+         console.log(public_id)
+         req.body.imagePublicId = public_id
       }
           let {id} = req.params
           if(req.body.name){
             req.body.slug = slugify(req.body.name)
           }
-          let category = await categoryModel.findByIdAndUpdate(id,req.body,{new:true})
+          let category = await categoryModel.findByIdAndUpdate(id,req.body,{new:false})
+          console.log(category.imagePublicId)
+          if(req.file){
+            await cloudinary.uploader.destroy(category.imagePublicId)
+          }
           console.log(category)
           if(!category){
             next(new Error("fail to update category",{cause:400}))
@@ -46,3 +52,19 @@ export const updateCategory = asyncHandler(
           
    }
 )
+
+export const getAllCategory = asyncHandler(
+
+      async (req,res,next)=>{
+         let category = await categoryModel.find({}).populate({
+            path:"createdBy"
+         })
+         if(!category){
+            next(new Error("Fail",{cause:400}))
+         }
+         else{
+            res.status(200).json({message:category})
+         }
+      }
+)
+

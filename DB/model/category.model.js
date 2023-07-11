@@ -11,7 +11,7 @@ const categorySchema = new Schema({
   image: String,
   createdBy: {
     type: Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'user',
     required: [true, 'Category owner is required']
   },
   slug:String,
