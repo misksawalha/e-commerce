@@ -3,6 +3,7 @@ import { asyncHandler } from './../../../middleware/asyncHandler.js';
 import cloudinary from './../../../services/cloundinary.js';
 import categoryModel from './../../../../DB/model/category.model.js';
 import slugify from 'slugify';
+import { pagination } from '../../../services/pagination.js';
 
 export const createCategory = asyncHandler(
    async (req, res, next) => {
@@ -56,9 +57,12 @@ export const updateCategory = asyncHandler(
 export const getAllCategory = asyncHandler(
 
       async (req,res,next)=>{
-         let category = await categoryModel.find({}).populate({
-            path:"createdBy"
-         })
+         let {page} = req.query
+         let {skip,limit}= pagination(page)
+         let category = await categoryModel.find({}).limit(limit).skip(skip).populate({
+            path:"createdBy",
+            select:'userName'
+         }).select('name')
          if(!category){
             next(new Error("Fail",{cause:400}))
          }
@@ -68,3 +72,15 @@ export const getAllCategory = asyncHandler(
       }
 )
 
+export const getCategoryDetails = asyncHandler(
+   async (req,res,next) => {
+         let {id}  = req.params 
+         let category = await categoryModel.findOne({_id:id})
+         if(!category){
+            next(new Error("fail",{cause:400}))
+         }
+        else{
+         res.status(200).json({message:"success",category})
+        }
+   }
+)
