@@ -6,6 +6,7 @@ import * as category from './controller/category.controller.js'
 const router  = Router();
 
 
-router.post('/',auth(endPoint.Add),myMulter(multerValidation.image).single('image'),category.createCategory)
+router.post('/addCategory',auth(endPoint.Add),myMulter(multerValidation.image).single('image'),category.createCategory)
+router.put('/updateCategory/:id',myMulter(multerValidation.image).single('image'),category.updateCategory)
 
 export default router

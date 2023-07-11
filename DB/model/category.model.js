@@ -13,7 +13,9 @@ const categorySchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'User',
     required: [true, 'Category owner is required']
-  }
+  },
+  slug:String,
+  imagePublicId:String,
 }, { timestamps: true });
 
 const categoryModel = mongoose.model('Category', categorySchema);
