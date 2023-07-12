@@ -3,12 +3,12 @@ import authRouter from './modules/auth/auth.router.js'
 import categoryRouter from './modules/category/category.router.js'
 import subCategoryRouter from './modules/subcategory/subcategory.router.js';
 import brandRouter from './modules/brand/brand.router.js';
-
+import productRouter from './modules/product/product.router.js'
 export{
     userRouter,
     authRouter,
     categoryRouter,
     subCategoryRouter,
-    brandRouter
-    
+    brandRouter,
+    productRouter
 }
