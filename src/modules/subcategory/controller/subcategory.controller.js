@@ -21,7 +21,7 @@ export const createSubCategory = asyncHandler(
          let { name } = req.body
          let slug = slugify(name)
          const { secure_url ,public_id} = await cloudinary.uploader.upload(req.file.path, { folder: `ecommerce/category/subcategory/${categoryId}` })
-         const subcategory = await subCategoryModel.create({ image: secure_url, name, slug, categoryId,createdBy:category.createdBy,imagePublicId:public_id })
+         const subcategory = await subCategoryModel.create({ image: secure_url, name, slug, categoryId,createdBy:req.user._id,imagePublicId:public_id })
          if (!subcategory) {
             next(new Error("fail to add subcategory", { cause: 400 }))
          }
