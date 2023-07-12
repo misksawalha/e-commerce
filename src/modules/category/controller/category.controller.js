@@ -59,7 +59,14 @@ export const getAllCategory = asyncHandler(
       async (req,res,next)=>{
          let {page} = req.query
          let {skip,limit}= pagination(page)
-         let category = await categoryModel.find({}).limit(limit).skip(skip).select('name image')
+         let category = await categoryModel.find({}).limit(limit).skip(skip).populate([
+           {
+               path:'subCategory'
+            },
+            {
+               path:'createdBy'
+            }
+         ])
          if(!category){
             next(new Error("Fail",{cause:400}))
          }

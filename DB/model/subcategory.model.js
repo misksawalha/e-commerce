@@ -18,7 +18,7 @@ const subCategorySchema = new Schema({
   imagePublicId:String,
   categoryId:{
     type:Schema.Types.ObjectId,
-    ref:'user'
+    ref:'Category'
   }
 }, { timestamps: true });
 
