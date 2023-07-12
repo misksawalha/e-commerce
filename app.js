@@ -16,6 +16,7 @@ const baseURL = process.env.BASEURL
 app.use((`${baseURL}user`),indexRouter.userRouter)
 app.use((`${baseURL}auth`),indexRouter.authRouter)
 app.use((`${baseURL}category`),indexRouter.categoryRouter)
+app.use((`${baseURL}subcategory`),indexRouter.subCategoryRouter)
 app.use((err,req,res,next)=>{
       if(err){
         return res.status(err['cause']).json({message:err.message})

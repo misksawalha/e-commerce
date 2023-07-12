@@ -59,10 +59,7 @@ export const getAllCategory = asyncHandler(
       async (req,res,next)=>{
          let {page} = req.query
          let {skip,limit}= pagination(page)
-         let category = await categoryModel.find({}).limit(limit).skip(skip).populate({
-            path:"createdBy",
-            select:'userName'
-         }).select('name')
+         let category = await categoryModel.find({}).limit(limit).skip(skip).select('name image')
          if(!category){
             next(new Error("Fail",{cause:400}))
          }
@@ -75,7 +72,10 @@ export const getAllCategory = asyncHandler(
 export const getCategoryDetails = asyncHandler(
    async (req,res,next) => {
          let {id}  = req.params 
-         let category = await categoryModel.findOne({_id:id})
+         let category = await categoryModel.findOne({_id:id}).populate({
+            path:"createdBy",
+            select:'userName'
+         })
          if(!category){
             next(new Error("fail",{cause:400}))
          }
