@@ -3,76 +3,69 @@ import { asyncHandler } from './../../../middleware/asyncHandler.js';
 import cloudinary from './../../../services/cloundinary.js';
 import slugify from 'slugify';
 import { pagination } from '../../../services/pagination.js';
-import brandModel from './../../../../DB/model/brand.model.js';
+import couponModel from './../../../../DB/model/coupon.model.js';
 
-export const createBrand = asyncHandler(
+export const createCoupon = asyncHandler(
    async (req, res, next) => {
-      if (!req.file) {
-         next(new Error("Image is required", { cause: 400 }))
-      }
-     
-         let { name } = req.body
-         let slug = slugify(name)
-         const { secure_url ,public_id} = await cloudinary.uploader.upload(req.file.path, { folder: `ecommerce/brand` })
-         const brand = await brandModel.create({ image: secure_url, name, slug,createdBy:req.user._id,imagePublicId:public_id })
-         if (!brand) {
-            next(new Error("fail to add brand", { cause: 400 }))
-         }
-         else {
-            res.status(201).json({ message: "the brand created Successfully", brand })
-         }
-         }
+        let findCoupon = await couponModel.findOne({name:req.body.name})
+        if(findCoupon){
+           next (new Error ("coupon name already exist",{cause:409}))
+        }else{
+            req.body.createdBy = req.user._id
+            let coupon = await couponModel.create(req.body)
+            if(!coupon){
+               next(new Error("fail to create coupon",{cause:400}))
+            }
+            else{
+               res.status(201).json({message:"success",coupon})
+            }
+        }
+   }
 )
 
-export const updateBrand = asyncHandler(
+export const updateCoupon = asyncHandler(
 
    async (req, res, next) => {
       let {id}=req.params
-      let brand = await brandModel.findById(id)
-      if(!brand){
-         next(new Error("fail to find brand",{cause:400}))
+      let updateCoupon = await couponModel.findOneAndUpdate({_id:id},req.body,{new:true})
+      if(updateCoupon){
+       return  res.status(200).json({message:"coupon updated successfully",updateCoupon})
       }
-      else{
-      if (req.file) {
-         const { secure_url,public_id } = await cloudinary.uploader.upload(req.file.path,{folder:`ecommerce/brand`})
-         req.body.image = secure_url
-         console.log(public_id)
-         req.body.imagePublicId = public_id
+      else {
+         return next(new Error("coupon not found",{cause:404}))
       }
-          if(req.body.name){
-            req.body.slug = slugify(req.body.name)
-          }
-          let findBrand = await brandModel.findOneAndUpdate({_id:id},req.body,{new:false})
-          if(findBrand){
-            if(req.file){
-               await cloudinary.uploader.destroy(findBrand.imagePublicId)
-             }
-             res.status(200).json({message:"brand updated successfully",findBrand})
-          }
-          else {
-            next(new Error("fail to update brand",{cause:400}))
-          }
    }
-}
 )
 
-export const getAllBrand = asyncHandler(async (req, res, next) => {
-   let { page } = req.query;
-   let { skip, limit } = pagination(page);
-   let brand = await brandModel.find({})
-     .limit(limit)
-     .skip(skip)
-     .populate({
-       path:'createdBy',
-     
-     });
- 
-   if (!brand) {
-     next(new Error('Fail', { cause: 400 }));
-   } else {
-     res.status(200).json({ message: brand });
+export const deleteCoupon = asyncHandler(
+   async (req,res,next)=>{
+       let {id} = req.params
+       let deleteCoupon = await couponModel.findOneAndDelete({_id:id})
+      if(updateCoupon){
+       return  res.status(200).json({message:"coupon deleted successfully",deleteCoupon})
+      }
+      else {
+         return next(new Error("coupon not found",{cause:404}))
+      }
    }
- });
+)
+// export const getAllBrand = asyncHandler(async (req, res, next) => {
+//    let { page } = req.query;
+//    let { skip, limit } = pagination(page);
+//    let brand = await brandModel.find({})
+//      .limit(limit)
+//      .skip(skip)
+//      .populate({
+//        path:'createdBy',
+     
+//      });
+ 
+//    if (!brand) {
+//      next(new Error('Fail', { cause: 400 }));
+//    } else {
+//      res.status(200).json({ message: brand });
+//    }
+//  });
  
 
 // export const getSubCategoryDetails = asyncHandler(
