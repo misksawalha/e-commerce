@@ -111,23 +111,28 @@ export const updateProduct = asyncHandler(
    }
 )
 
-// export const getAllBrand = asyncHandler(async (req, res, next) => {
-//    let { page } = req.query;
-//    let { skip, limit } = pagination(page);
-//    let brand = await brandModel.find({})
-//      .limit(limit)
-//      .skip(skip)
-//      .populate({
-//        path:'createdBy',
-     
-//      });
+export const getAllProduct = asyncHandler(async (req, res, next) => {
+   let { page } = req.query;
+   let { skip, limit } = pagination(page);
+   let product = await productModel.find({})
+     .limit(limit)
+     .skip(skip)
+     .populate([{
+       path:'createdBy',
+       select:"userName"
+     },
+     {
+      path:"categoryId",
+      select:'name'
+     }
+   ]);
  
-//    if (!brand) {
-//      next(new Error('Fail', { cause: 400 }));
-//    } else {
-//      res.status(200).json({ message: brand });
-//    }
-//  });
+   if (!product) {
+     next(new Error('Fail', { cause: 400 }));
+   } else {
+     res.status(200).json({ message: product });
+   }
+ });
  
 
 // export const getSubCategoryDetails = asyncHandler(
