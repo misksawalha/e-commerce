@@ -7,7 +7,7 @@ const router  = Router();
 
 //,myMulter(multerValidation.image).single('image')
 router.post('/createProduct',auth(endPoint.Add),myMulter(multerValidation.image).array('image',5),product.createProduct)
-router.put('/updateProduct/:id',myMulter(multerValidation.image).single('image'),product.updateProduct)
+router.put('/updateProduct/:id',auth(endPoint.Add),myMulter(multerValidation.image).array('image',5),product.updateProduct)
 // router.get('/getAllBrand',brand.getAllBrand)
 // router.get('/getSubCategoryDetails/:id',subcategory.getSubCategoryDetails)
 
