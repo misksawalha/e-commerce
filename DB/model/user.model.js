@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose ,{Schema} from "mongoose";
 
 const userSchema = new mongoose.Schema({
       userName:{
@@ -32,7 +32,11 @@ const userSchema = new mongoose.Schema({
         type:Boolean,
         default:false
       },
-      image:String
+      image:String,
+      whishList:[{
+         type:Schema.Types.ObjectId,
+         ref:'product'
+      }]
 },{timestamps:true})
 
 const userModel = mongoose.model('user',userSchema)

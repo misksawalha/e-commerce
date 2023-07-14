@@ -8,8 +8,8 @@ const router  = Router();
 
 router.post('/createCoupon',auth(endPoint.Add),coupon.createCoupon)
 router.put('/updateCoupon/:id',auth(endPoint.Update),coupon.updateCoupon)
-router.delete('/deleteCoupon/:id',auth(endPoint.Update),coupon.deleteCoupon)
-// router.get('/getAllBrand',brand.getAllBrand)
+router.delete('/deleteCoupon/:id',auth(endPoint.Delete),coupon.deleteCoupon)
+router.get('/getValidCoupon',coupon.getValidCoupon)
 // router.get('/getSubCategoryDetails/:id',subcategory.getSubCategoryDetails)
 
 export default router

@@ -1,9 +1,9 @@
-
 import { asyncHandler } from './../../../middleware/asyncHandler.js';
 import cloudinary from './../../../services/cloundinary.js';
 import slugify from 'slugify';
 import { pagination } from '../../../services/pagination.js';
 import couponModel from './../../../../DB/model/coupon.model.js';
+import moment from 'moment';
 
 export const createCoupon = asyncHandler(
    async (req, res, next) => {
@@ -47,6 +47,20 @@ export const deleteCoupon = asyncHandler(
       else {
          return next(new Error("coupon not found",{cause:404}))
       }
+   }
+)
+
+export const getValidCoupon =asyncHandler(
+   async (req,res,next)=>{
+         var now = moment()
+         let date = []
+         let coupons = await couponModel.find({})
+        for (const coupon of coupons) {
+           let exp = coupon.expireDate
+           let diff = now.diff(exp,'days')
+           console.log(diff)
+        }
+        res.json("misk")
    }
 )
 // export const getAllBrand = asyncHandler(async (req, res, next) => {
