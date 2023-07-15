@@ -9,15 +9,15 @@ export const createCoupon = asyncHandler(
    async (req, res, next) => {
         let findCoupon = await couponModel.findOne({name:req.body.name})
         if(findCoupon){
-           next (new Error ("coupon name already exist",{cause:409}))
+         return  next (new Error ("coupon name already exist",{cause:409}))
         }else{
             req.body.createdBy = req.user._id
             let coupon = await couponModel.create(req.body)
             if(!coupon){
-               next(new Error("fail to create coupon",{cause:400}))
+               return next(new Error("fail to create coupon",{cause:400}))
             }
             else{
-               res.status(201).json({message:"success",coupon})
+               return res.status(201).json({message:"success",coupon})
             }
         }
    }
@@ -52,16 +52,18 @@ export const deleteCoupon = asyncHandler(
 
 export const getValidCoupon =asyncHandler(
    async (req,res,next)=>{
-         var now = moment()
-         let date = []
-         let coupons = await couponModel.find({})
-        for (const coupon of coupons) {
-           let exp = coupon.expireDate
-           let diff = now.diff(exp,'days')
-           console.log(diff)
-        }
-        res.json("misk")
-   }
+         var now = moment() //return the current date and hour
+         let date= []
+         let coupons = await couponModel.find({});
+         for (const coupon of coupons) {
+            let exp = coupon.expireDate
+            let diff = now.diff(exp,"days")
+            if(diff<0){
+               date.push(coupon)
+            }
+         }
+         return res.status(200).json({message:"success",date})
+    }
 )
 // export const getAllBrand = asyncHandler(async (req, res, next) => {
 //    let { page } = req.query;

@@ -18,7 +18,7 @@ const couponSchema = new Schema({
     type:Schema.Types.ObjectId,
     ref:'user'
   }],
-  expireDate:String,
+  expireDate:Date,
   amount:{
     type:Number,
     max:[100,"max is 100%"],
