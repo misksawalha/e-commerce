@@ -4,7 +4,6 @@ const orderSchema = new Schema({
   userId:{
     type:Types.ObjectId,
     ref:'user',
-    required:[true,'user id is required']
   },
   products:[
    {
@@ -15,10 +14,19 @@ const orderSchema = new Schema({
      quantity:{
         type:Number,
         default:1
-        
+     },
+     totalPrice:{
+        type:Number,
+        default:1
      }
    }
-  ]
+  ],
+  address:String,
+  phone:String,
+  totalPrice:{
+   type: Number,
+   default:1
+}
 
 }, { timestamps: true });
 

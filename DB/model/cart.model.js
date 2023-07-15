@@ -4,7 +4,8 @@ const cartSchema = new Schema({
   userId:{
     type:Types.ObjectId,
     ref:'user',
-    required:[true,'user id is required']
+    required:[true,'user id is required'],
+    unique:[true,'only one cart']
   },
   products:[
    {
